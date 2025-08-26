@@ -1,25 +1,38 @@
 package com.dunnas.web;
 
-import com.dunnas.domain.*;
-import com.dunnas.repository.*;
-import com.dunnas.service.LocacaoService;
-import com.dunnas.service.BusinessException;
-import com.dunnas.security.PrivateDescriptionPermissionCache;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+
+import com.dunnas.domain.CatalogoLocador;
+import com.dunnas.domain.Locacao;
+import com.dunnas.domain.RecargaSaldo;
+import com.dunnas.domain.Usuario;
+import com.dunnas.domain.UsuarioTipo;
+import com.dunnas.repository.CatalogoLocadorRepository;
+import com.dunnas.repository.LocacaoRepository;
+import com.dunnas.repository.MovimentacaoFinanceiraRepository;
+import com.dunnas.repository.RecargaSaldoRepository;
+import com.dunnas.repository.UsuarioRepository;
+import com.dunnas.security.PrivateDescriptionPermissionCache;
+import com.dunnas.service.BusinessException;
+import com.dunnas.service.LocacaoService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/locacoes")

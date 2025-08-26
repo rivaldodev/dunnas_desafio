@@ -1,22 +1,27 @@
 package com.dunnas.web;
 
-import com.dunnas.repository.ObraRepository;
-import com.dunnas.domain.Obra;
-import jakarta.validation.constraints.*;
-import jakarta.validation.Valid;
-import org.springframework.validation.BindingResult;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.dunnas.domain.Locacao;
+import com.dunnas.domain.Obra;
+import com.dunnas.domain.Usuario;
 import com.dunnas.repository.LocacaoRepository;
+import com.dunnas.repository.ObraRepository;
 import com.dunnas.repository.UsuarioRepository;
 import com.dunnas.security.PrivateDescriptionPermissionCache;
-import com.dunnas.domain.Usuario;
-import com.dunnas.domain.Locacao;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Controller
 public class ObraController {

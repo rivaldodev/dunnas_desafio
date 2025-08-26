@@ -1,12 +1,14 @@
 package com.dunnas.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import com.dunnas.domain.MovimentacaoFinanceira;
-import com.dunnas.domain.Usuario;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import com.dunnas.domain.Locacao;
+import com.dunnas.domain.MovimentacaoFinanceira;
+import com.dunnas.domain.Usuario;
 
 public interface MovimentacaoFinanceiraRepository extends JpaRepository<MovimentacaoFinanceira, Long> {
     List<MovimentacaoFinanceira> findByUsuario(Usuario usuario);

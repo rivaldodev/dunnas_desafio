@@ -2,12 +2,13 @@ package com.dunnas.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
 import jakarta.servlet.DispatcherType;
 
 @Configuration
@@ -18,7 +19,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/css/**", "/login").permitAll()
+                        .requestMatchers("/css/**", "/login", "/usuarios/cadastrar", "/usuarios/cadastrar/**").permitAll()
                         .requestMatchers("/catalogo/obras/gerenciar", "/catalogo/obras/gerenciar/**").hasAnyRole("LOCADOR","ADMIN")
                         .requestMatchers(HttpMethod.POST, "/catalogo/obras/gerenciar").hasAnyRole("LOCADOR","ADMIN")
                         .anyRequest().authenticated()

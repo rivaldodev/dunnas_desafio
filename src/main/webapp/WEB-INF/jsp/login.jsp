@@ -28,6 +28,9 @@
         <c:if test="${param.error != null}">Credenciais inválidas</c:if>
         <c:if test="${param.logout != null}">Sessão encerrada</c:if>
     </form>
+    <div style="margin-top: 16px; text-align: center;">
+        <a href="<c:url value='/usuarios/cadastrar' />">Cadastre-se</a>
+    </div>
 </div>
 </body>
 </html>

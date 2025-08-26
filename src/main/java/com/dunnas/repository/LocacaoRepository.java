@@ -1,13 +1,15 @@
 package com.dunnas.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import com.dunnas.domain.Locacao;
-import com.dunnas.domain.Usuario;
 import com.dunnas.domain.Obra;
-import java.util.List;
-import java.util.Optional;
+import com.dunnas.domain.Usuario;
 
 public interface LocacaoRepository extends JpaRepository<Locacao, Long> {
     List<Locacao> findByClienteAndStatus(Usuario cliente, Locacao.Status status);

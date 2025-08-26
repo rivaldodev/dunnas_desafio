@@ -1,9 +1,13 @@
 package com.dunnas.service;
 
-import com.dunnas.domain.*;
-import com.dunnas.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.dunnas.domain.CatalogoLocador;
+import com.dunnas.domain.Locacao;
+import com.dunnas.domain.Usuario;
+import com.dunnas.repository.CatalogoLocadorRepository;
+import com.dunnas.repository.LocacaoRepository;
 
 @Service
 public class LocacaoService {

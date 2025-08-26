@@ -18,6 +18,9 @@
             <label for="password">Senha</label>
             <input id="password" name="password" type="password" required />
         </div>
+        <c:if test="${_csrf != null}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        </c:if>
         <div>
             <button type="submit">Entrar</button>
         </div>

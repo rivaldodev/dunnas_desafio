@@ -11,6 +11,10 @@
 <header>
     <nav>
         <span>${username}</span>
+        <a href="<c:url value='/catalogo/obras' />">Catálogo</a>
+        <c:if test="${tipo == 'LOCADOR'}">
+            <a href="<c:url value='/locador/catalogo' />">Meu Catálogo</a>
+        </c:if>
         <form action="<c:url value='/logout'/>" method="post" style="display:inline">
             <c:if test="${_csrf != null}">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -21,6 +25,12 @@
 </header>
 <main>
     <h2>Bem vindo</h2>
+    <c:if test="${tipo == 'LOCADOR'}">
+        <p>Você é LOCADOR. Gerencie seu catálogo.</p>
+    </c:if>
+    <c:if test="${tipo == 'CLIENTE'}">
+        <p>Você é CLIENTE. Em breve poderá iniciar locações.</p>
+    </c:if>
 </main>
 </body>
 </html>

@@ -28,7 +28,13 @@ public class HomeController {
         Usuario u = usuarioRepository.findByEmail(user.getUsername()).orElse(null);
         if(u != null){
             model.addAttribute("tipo", u.getTipo());
+            model.addAttribute("saldo", u.getSaldo());
         }
         return "home";
+    }
+
+    @GetMapping("/403")
+    public String acessoNegado(){
+        return "403";
     }
 }

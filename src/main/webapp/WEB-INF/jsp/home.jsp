@@ -10,10 +10,15 @@
 <body>
 <header>
     <nav>
-        <span>${username}</span>
+    <span>${username} (Saldo: <c:out value="${saldo}"/>)</span>
         <a href="<c:url value='/catalogo/obras' />">Catálogo</a>
         <c:if test="${tipo == 'LOCADOR'}">
             <a href="<c:url value='/locador/catalogo' />">Meu Catálogo</a>
+        </c:if>
+        <c:if test="${tipo == 'CLIENTE'}">
+            <a href="${pageContext.request.contextPath}/locacoes/disponiveis">Obras Disponíveis</a>
+            <a href="${pageContext.request.contextPath}/locacoes/minhas">Minhas Locações</a>
+            <a href="${pageContext.request.contextPath}/locacoes/extrato">Extrato / Saldo</a>
         </c:if>
         <form action="<c:url value='/logout'/>" method="post" style="display:inline">
             <c:if test="${_csrf != null}">

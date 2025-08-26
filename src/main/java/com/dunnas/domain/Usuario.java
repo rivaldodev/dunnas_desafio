@@ -18,6 +18,8 @@ public class Usuario {
     private UsuarioTipo tipo;
     private OffsetDateTime criadoEm;
     private boolean ativo = true;
+    @Column(nullable = false)
+    private Double saldo = 0.0;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_role",
@@ -39,4 +41,6 @@ public class Usuario {
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) { this.ativo = ativo; }
     public Set<Role> getRoles() { return roles; }
+    public Double getSaldo() { return saldo; }
+    public void setSaldo(Double saldo) { this.saldo = saldo; }
 }

@@ -10,9 +10,9 @@
         <java.version>17</java.version>
         <spring.boot.version>3.3.2</spring.boot.version>
         <flyway.version>10.17.0</flyway.version>
-        <project.flyway.url>${spring.datasource.url}</project.flyway.url>
-        <project.flyway.user>${spring.datasource.username}</project.flyway.user>
-        <project.flyway.password>${spring.datasource.password}</project.flyway.password>
+        <!-- Flyway will read connection info from environment variables (PowerShell example):
+             $env:DB_URL="jdbc:postgresql://localhost:5544/dunnas_rental"; $env:DB_USER="default"; $env:DB_PASSWORD="default"
+             Then run: ./mvnw -DskipTests flyway:repair -->
     </properties>
 
     <dependencyManagement>
@@ -85,6 +85,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
@@ -94,12 +106,15 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
                 <configuration>
-                    <url>${project.flyway.url}</url>
-                    <user>${project.flyway.user}</user>
-                    <password>${project.flyway.password}</password>
+                    <url>${env.DB_URL}</url>
+                    <user>${env.DB_USER}</user>
+                    <password>${env.DB_PASSWORD}</password>
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
                     </locations>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <cleanDisabled>true</cleanDisabled>
+                    <validateOnMigrate>true</validateOnMigrate>
                 </configuration>
             </plugin>
         </plugins>

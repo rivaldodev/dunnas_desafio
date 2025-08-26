@@ -11,14 +11,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
+import com.dunnas.repository.LocacaoRepository;
+import com.dunnas.repository.UsuarioRepository;
+import com.dunnas.security.PrivateDescriptionPermissionCache;
+import com.dunnas.domain.Usuario;
+import com.dunnas.domain.Locacao;
 
 @Controller
 public class ObraController {
 
     private final ObraRepository obraRepository;
+    private final LocacaoRepository locacaoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PrivateDescriptionPermissionCache permCache;
 
-    public ObraController(ObraRepository obraRepository) {
+    public ObraController(ObraRepository obraRepository, LocacaoRepository locacaoRepository, UsuarioRepository usuarioRepository, PrivateDescriptionPermissionCache permCache) {
         this.obraRepository = obraRepository;
+        this.locacaoRepository = locacaoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.permCache = permCache;
     }
 
     public static class NovaObraForm {
@@ -31,6 +43,10 @@ public class ObraController {
         @NotNull @DecimalMin(value="0.01")
         private Double preco;
         private boolean publico = true;
+    @Size(max=500)
+    private String descricaoPublica;
+    @Size(max=2000)
+    private String descricaoPrivada;
         public String getIsbn() { return isbn; }
         public void setIsbn(String isbn) { this.isbn = isbn; }
         public String getTitulo() { return titulo; }
@@ -41,18 +57,64 @@ public class ObraController {
         public void setPreco(Double preco) { this.preco = preco; }
         public boolean isPublico() { return publico; }
         public void setPublico(boolean publico) { this.publico = publico; }
+    public String getDescricaoPublica() { return descricaoPublica; }
+    public void setDescricaoPublica(String d) { this.descricaoPublica = d; }
+    public String getDescricaoPrivada() { return descricaoPrivada; }
+    public void setDescricaoPrivada(String d) { this.descricaoPrivada = d; }
+    }
+
+    @GetMapping("/obras/{id}/privada")
+    public String descricaoPrivada(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails ud, Model model){
+        Obra o = obraRepository.findById(id).orElse(null);
+        if(o == null){
+            model.addAttribute("erro","Obra não encontrada");
+            return "error";
+        }
+        Usuario u = usuarioRepository.findByEmail(ud.getUsername()).orElse(null);
+        boolean autorizado = false;
+        if(u != null){
+            if(u.getTipo() == com.dunnas.domain.UsuarioTipo.LOCADOR){
+                autorizado = true;
+            } else {
+                Long uid = u.getId(); Long oid = o.getId();
+                if(permCache.has(uid, oid)) {
+                    // still require active locacao to enforce revocation after finalize
+                    autorizado = locacaoRepository.findFirstByClienteAndObraAndStatus(u, o, Locacao.Status.ATIVA).isPresent();
+                    if(!autorizado) permCache.revoke(uid, oid);
+                } else {
+                    boolean active = locacaoRepository.findFirstByClienteAndObraAndStatus(u, o, Locacao.Status.ATIVA).isPresent();
+                    if(active){
+                        permCache.grant(uid, oid);
+                        autorizado = true;
+                    }
+                }
+            }
+        }
+        if(!autorizado){
+            model.addAttribute("erro","Descrição privada disponível apenas após locação ativa.");
+            return "403";
+        }
+        model.addAttribute("obra", o);
+        model.addAttribute("username", ud.getUsername());
+        return "obra_privada";
     }
 
     @GetMapping("/catalogo/obras")
     public String listar(@AuthenticationPrincipal UserDetails user, Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("obras", obraRepository.findAll());
-        model.addAttribute("form", new NovaObraForm());
-        // reutiliza user tipo se necessário futuramente (buscar diretamente via repository opcional)
-        return "obras";
+        return "obras"; // somente listagem
     }
 
-    @PostMapping("/catalogo/obras")
+    @GetMapping("/catalogo/obras/gerenciar")
+    public String gerenciar(@AuthenticationPrincipal UserDetails user, Model model) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("obras", obraRepository.findAll());
+        model.addAttribute("form", new NovaObraForm());
+        return "obras_gerenciar";
+    }
+
+    @PostMapping("/catalogo/obras/gerenciar")
     public String criar(@AuthenticationPrincipal UserDetails user,
                         @Valid NovaObraForm form,
                         BindingResult result,
@@ -63,7 +125,7 @@ public class ObraController {
         if(result.hasErrors()) {
             model.addAttribute("username", user.getUsername());
             model.addAttribute("obras", obraRepository.findAll());
-            return "obras";
+            return "obras_gerenciar";
         }
         Obra o = new Obra();
         o.setIsbn(form.getIsbn());
@@ -71,7 +133,9 @@ public class ObraController {
         o.setAutor(form.getAutor());
         o.setPreco(form.getPreco());
         o.setPublico(form.isPublico());
+    o.setDescricaoPublica(form.getDescricaoPublica());
+    o.setDescricaoPrivada(form.getDescricaoPrivada());
         obraRepository.save(o);
-        return "redirect:/catalogo/obras";
+        return "redirect:/catalogo/obras/gerenciar";
     }
 }

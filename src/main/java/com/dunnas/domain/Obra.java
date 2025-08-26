@@ -17,6 +17,11 @@ public class Obra {
     private Double preco; // manter simples na app; precisão garantida no banco
     @Column(nullable=false)
     private boolean publico = true;
+    // campos de descrição: parte pública e parte privada (revelada só após locação)
+    @Column(name="desc_publica", length=500)
+    private String descricaoPublica;
+    @Column(name="desc_privada", length=2000)
+    private String descricaoPrivada;
     @Column(name="criado_em", nullable=false)
     private OffsetDateTime criadoEm;
 
@@ -34,6 +39,10 @@ public class Obra {
     public void setPreco(Double preco) { this.preco = preco; }
     public boolean isPublico() { return publico; }
     public void setPublico(boolean publico) { this.publico = publico; }
+    public String getDescricaoPublica() { return descricaoPublica; }
+    public void setDescricaoPublica(String d) { this.descricaoPublica = d; }
+    public String getDescricaoPrivada() { return descricaoPrivada; }
+    public void setDescricaoPrivada(String d) { this.descricaoPrivada = d; }
     public OffsetDateTime getCriadoEm() { return criadoEm; }
     public void setCriadoEm(OffsetDateTime criadoEm) { this.criadoEm = criadoEm; }
 }

@@ -3,6 +3,7 @@ package com.dunnas.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/css/**", "/login").permitAll()
+                        .requestMatchers("/catalogo/obras/gerenciar", "/catalogo/obras/gerenciar/**").hasAnyRole("LOCADOR","ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/catalogo/obras/gerenciar").hasAnyRole("LOCADOR","ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -26,6 +29,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout"))
+                .exceptionHandling(ex -> ex.accessDeniedPage("/403"))
                 .csrf(Customizer.withDefaults());
         return http.build();
     }

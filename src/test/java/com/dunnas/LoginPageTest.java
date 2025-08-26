@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@org.springframework.test.context.ActiveProfiles("test")
 @AutoConfigureMockMvc
 class LoginPageTest {
 
@@ -18,8 +19,8 @@ class LoginPageTest {
 
     @Test
     void deveCarregarPaginaLogin() throws Exception {
-        mockMvc.perform(get("/login"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Acesso")));
+    mockMvc.perform(get("/login"))
+        .andExpect(status().isOk())
+        .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl("/WEB-INF/jsp/login.jsp"));
     }
 }

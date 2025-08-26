@@ -1,15 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="dates" uri="http://dunnas/desafio/dates" %>
 <html><head><title>Extrato</title></head>
 <body>
 <h2>Extrato Financeiro</h2>
-<p>Usuário: ${username} | Saldo Atual: <b><c:out value='${saldo}'/></b></p>
+<fmt:setLocale value="pt_BR"/>
+<p>Usuário: ${username} | Saldo Atual: <b><fmt:formatNumber value='${saldo}' type='currency'/></b></p>
 <c:if test='${not empty erro}'><div style='color:red'>${erro}</div></c:if>
 <c:if test='${not empty msg}'><div style='color:green'>${msg}</div></c:if>
 
 <h3>Recarga de Saldo</h3>
 <form method="post" action="${pageContext.request.contextPath}/locacoes/recarga">
-  <label>Valor: <input type="number" step="0.01" name="valor" required></label>
+  <label>Valor: <input type="text" class="money-mask" name="valor" required></label>
   <label>Tipo: <select name="tipo">
     <option value="PIX">PIX</option>
     <option value="CARTAO_CREDITO">Cartão Crédito</option>
@@ -25,10 +28,10 @@
  <tr><th>Data</th><th>Locação</th><th>Tipo</th><th>Valor</th></tr>
  <c:forEach items='${movs}' var='m'>
    <tr>
-     <td>${m.criadaEm}</td>
+  <td>${dates:format(m.criadaEm)}</td>
      <td>${m.locacao.id}</td>
      <td>${m.tipo}</td>
-     <td>${m.valor}</td>
+  <td><fmt:formatNumber value='${m.valor}' type='currency'/></td>
    </tr>
  </c:forEach>
 </table>
@@ -38,12 +41,13 @@
  <tr><th>Data</th><th>Tipo</th><th>Valor</th></tr>
  <c:forEach items='${recargas}' var='r'>
    <tr>
-     <td>${r.criadaEm}</td>
+  <td>${dates:format(r.criadaEm)}</td>
      <td>${r.tipo}</td>
-     <td>${r.valor}</td>
+  <td><fmt:formatNumber value='${r.valor}' type='currency'/></td>
    </tr>
  </c:forEach>
 </table>
 
 <a href='${pageContext.request.contextPath}/home'>Home</a>
+<script src='${pageContext.request.contextPath}/js/masks.js'></script>
 </body></html>

@@ -2,6 +2,7 @@ package com.dunnas.domain;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name="recarga_saldo")
@@ -23,7 +24,7 @@ public class RecargaSaldo {
     @Column(name="criada_em", nullable=false)
     private OffsetDateTime criadaEm;
 
-    @PrePersist void pre(){ if(criadaEm==null) criadaEm = OffsetDateTime.now(); }
+    @PrePersist void pre(){ if(criadaEm==null) criadaEm = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo")); }
 
     public Long getId(){ return id; }
     public Usuario getUsuario(){ return usuario; }

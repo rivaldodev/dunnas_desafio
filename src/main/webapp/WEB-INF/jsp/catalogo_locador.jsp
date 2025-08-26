@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="dates" uri="http://dunnas/desafio/dates" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -75,12 +77,13 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items='${itens}' var='i'>
+    <fmt:setLocale value="pt_BR"/>
+    <c:forEach items='${itens}' var='i'>
             <tr>
                 <td>${i.id}</td>
                 <td>${i.obra.titulo} (${i.obra.isbn})</td>
                 <td>${i.estoque}</td>
-                <td>${i.criadoEm}</td>
+                <td>${dates:format(i.criadoEm)}</td>
             </tr>
         </c:forEach>
         <c:if test='${empty itens}'>

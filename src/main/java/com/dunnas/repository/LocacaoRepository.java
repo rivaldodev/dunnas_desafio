@@ -15,4 +15,7 @@ public interface LocacaoRepository extends JpaRepository<Locacao, Long> {
     @Query("select l from Locacao l join fetch l.obra where l.cliente = :cliente and l.status = :status")
     List<Locacao> findActiveWithObra(@Param("cliente") Usuario cliente, @Param("status") Locacao.Status status);
     Optional<Locacao> findFirstByClienteAndObraAndStatus(Usuario cliente, Obra obra, Locacao.Status status);
+
+    @Query("select l from Locacao l join fetch l.obra o join fetch l.cliente c where l.locador = :locador order by l.iniciadaEm desc")
+    List<Locacao> findHistoricoByLocador(@Param("locador") Usuario locador);
 }

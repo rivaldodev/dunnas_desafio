@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html><head><title>Obras Disponíveis</title></head>
@@ -17,13 +18,14 @@
 </form>
 <table border="1">
 <tr><th>ID Catalogo</th><th>Locador</th><th>Obra</th><th>ISBN</th><th>Preço</th><th>Estoque</th></tr>
+<fmt:setLocale value="pt_BR"/>
 <c:forEach items="${lista}" var="c">
     <tr>
         <td>${c.id}</td>
         <td>${c.locador.nome}</td>
     <td>${c.obra.titulo}</td>
     <td>${c.obra.isbn}</td>
-        <td>${c.obra.preco}</td>
+    <td><fmt:formatNumber value='${c.obra.preco}' type='currency'/></td>
         <td>${c.estoque}</td>
     </tr>
 </c:forEach>

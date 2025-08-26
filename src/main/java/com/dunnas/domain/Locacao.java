@@ -2,6 +2,7 @@ package com.dunnas.domain;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Entity
 public class Locacao {
@@ -38,7 +39,7 @@ public class Locacao {
     private Status status;
 
     @PrePersist void pre() {
-        if (iniciadaEm==null) iniciadaEm = OffsetDateTime.now();
+    if (iniciadaEm==null) iniciadaEm = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo"));
         if (status==null) status = Status.ATIVA;
     }
 

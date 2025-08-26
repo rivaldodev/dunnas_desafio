@@ -2,6 +2,7 @@ package com.dunnas.domain;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Entity
 public class Obra {
@@ -26,7 +27,7 @@ public class Obra {
     private OffsetDateTime criadoEm;
 
     @PrePersist
-    void pre() { if (criadoEm==null) criadoEm = OffsetDateTime.now(); }
+    void pre() { if (criadoEm==null) criadoEm = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo")); }
 
     public Long getId() { return id; }
     public String getIsbn() { return isbn; }

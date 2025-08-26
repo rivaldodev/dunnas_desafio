@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="dates" uri="http://dunnas/desafio/dates" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -40,7 +42,7 @@
                 <input type="text" name="autor" value="${form.autor}" maxlength="160" />
             </label>
             <label>Preço
-                <input type="number" min="0.01" step="0.01" name="preco" value="${form.preco}" required />
+                <input type="text" class="money-mask" name="preco" value="${form.preco}" required />
             </label>
             <label>
                 <input type="checkbox" name="publico" <c:if test='${form.publico}'>checked</c:if> /> Público
@@ -72,17 +74,18 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${obras}" var="o">
+    <fmt:setLocale value="pt_BR"/>
+    <c:forEach items="${obras}" var="o">
             <tr>
                 <td><c:out value='${o.id}'/></td>
                 <td><c:out value='${o.isbn}'/></td>
                 <td><c:out value='${o.titulo}'/></td>
                 <td><c:out value='${o.autor}'/></td>
-                <td><c:out value='${o.preco}'/></td>
+                <td><fmt:formatNumber value='${o.preco}' type='currency'/></td>
                 <td><c:out value='${o.publico}'/></td>
                 <td><c:out value='${o.descricaoPublica}'/></td>
                 <td><c:out value='${o.descricaoPrivada}'/></td>
-                <td><c:out value='${o.criadoEm}'/></td>
+                <td>${dates:format(o.criadoEm)}</td>
             </tr>
         </c:forEach>
         <c:if test='${empty obras}'>
@@ -91,5 +94,6 @@
         </tbody>
     </table>
 </main>
+<script src="${pageContext.request.contextPath}/js/masks.js"></script>
 </body>
 </html>

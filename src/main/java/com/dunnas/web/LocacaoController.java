@@ -124,6 +124,18 @@ public class LocacaoController {
         return "extrato";
     }
 
+    @GetMapping("/historico-locador")
+    public String historicoLocador(@AuthenticationPrincipal UserDetails ud, Model model){
+        Usuario u = current(ud);
+        if(!UsuarioTipo.LOCADOR.equals(u.getTipo())) {
+            return "403";
+        }
+        model.addAttribute("username", ud.getUsername());
+        List<Locacao> locs = locacaoRepository.findHistoricoByLocador(u);
+        model.addAttribute("locacoes", locs);
+        return "locacoes_historico_locador";
+    }
+
     public static class RecargaForm { @NotNull Double valor; @NotNull RecargaSaldo.Tipo tipo; public Double getValor(){return valor;} public void setValor(Double v){this.valor=v;} public RecargaSaldo.Tipo getTipo(){return tipo;} public void setTipo(RecargaSaldo.Tipo t){this.tipo=t;} }
 
     @PostMapping("/recarga") @Transactional

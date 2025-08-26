@@ -2,6 +2,7 @@ package com.dunnas.domain;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name="catalogo_locador", uniqueConstraints = {@UniqueConstraint(columnNames = {"locador_id","obra_id"})})
@@ -25,7 +26,7 @@ public class CatalogoLocador {
     private OffsetDateTime criadoEm;
 
     @PrePersist
-    void pre() { if (criadoEm==null) criadoEm = OffsetDateTime.now(); }
+    void pre() { if (criadoEm==null) criadoEm = OffsetDateTime.now(ZoneId.of("America/Sao_Paulo")); }
 
     public Long getId() { return id; }
     public Usuario getLocador() { return locador; }

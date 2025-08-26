@@ -13,7 +13,8 @@ public class CatalogoLocador {
     @JoinColumn(name="locador_id", nullable=false)
     private Usuario locador;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // EAGER para evitar LazyInitialization na view (open-in-view=false) ao acessar titulo/isbn
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="obra_id", nullable=false)
     private Obra obra;
 

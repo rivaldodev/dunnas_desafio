@@ -4,3 +4,8 @@ target/
 *.log
 .DS_Store
 .mvn/wrapper/maven-wrapper.jar
+id_ed25519
+id_ed25519.pub
+id_rsa
+id_rsa.pub
+*.pem

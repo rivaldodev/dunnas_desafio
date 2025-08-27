@@ -10,9 +10,6 @@
     <title>Meu Catálogo</title>
     <link rel="stylesheet" href="<c:url value='/css/style.css' />" />
     <style>
-        table { border-collapse: collapse; width:100%; margin-top: 16px; }
-        th, td { border:1px solid #ddd; padding:6px; font-size:14px; }
-        th { background:#f4f4f4; }
         .erro { color:#b00; font-size:12px; }
         form.inline { display:inline; }
         .flex { display:flex; gap:12px; align-items:flex-end; }
@@ -20,24 +17,14 @@
         select, input[type=number] { padding:4px; }
     </style>
 </head>
-<body>
-<header>
-    <nav>
-        <span>${username}</span>
-        <a href="<c:url value='/'/>">Home</a>
-        <a href="<c:url value='/catalogo/obras' />">Obras</a>
-        <form action="<c:url value='/logout'/>" method="post" style="display:inline">
-            <c:if test="${_csrf != null}">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            </c:if>
-            <button type="submit">Sair</button>
-        </form>
-    </nav>
-</header>
-<main>
+<body style="background:#f4f6fa;">
+<jsp:include page="header.jsp"/>
+<main class="container" style="margin-top:32px;">
     <h2>Meu Catálogo (Locador)</h2>
 
-    <h3>Adicionar Obra</h3>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+            <h3 style="margin:0;">Adicionar Obra</h3>
+        </div>
     <form action="" method="post" class="flex">
         <c:if test="${_csrf != null}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -62,7 +49,7 @@
             </c:if>
         </div>
         <div>
-            <button type="submit">Adicionar</button>
+            <button type="submit" class="btn btn-primary">Adicionar</button>
         </div>
     </form>
 
@@ -92,5 +79,6 @@
         </tbody>
     </table>
 </main>
+</div>
 </body>
 </html>

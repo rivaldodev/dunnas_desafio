@@ -1,5 +1,7 @@
 package com.dunnas.web;
 
+import java.beans.PropertyEditorSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,13 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import java.beans.PropertyEditorSupport;
 
+import com.dunnas.domain.Role;
 import com.dunnas.domain.Usuario;
 import com.dunnas.domain.UsuarioTipo;
-import com.dunnas.repository.UsuarioRepository;
 import com.dunnas.repository.RoleRepository;
-import com.dunnas.domain.Role;
+import com.dunnas.repository.UsuarioRepository;
 
 import jakarta.validation.Valid;
 

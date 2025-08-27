@@ -70,9 +70,10 @@ public class LocacaoController {
     public String disponiveis(@AuthenticationPrincipal UserDetails ud,
                               @RequestParam(value="q", required=false) String termo,
                               Model model){
-        model.addAttribute("username", ud.getUsername());
         Usuario u = current(ud);
-    model.addAttribute("saldo", u.getSaldo());
+        model.addAttribute("username", u.getEmail());
+        model.addAttribute("tipo", u.getTipo());
+        model.addAttribute("saldo", u.getSaldo());
         List<CatalogoLocador> disponiveis = catalogoLocadorRepository.findDisponiveisParaCliente(u);
         if(termo != null && !termo.trim().isEmpty()){
             String t = termo.trim().toLowerCase();
@@ -121,8 +122,9 @@ public class LocacaoController {
     @GetMapping("/minhas")
     public String minhas(@AuthenticationPrincipal UserDetails ud, Model model){
         Usuario cliente = current(ud);
-        model.addAttribute("username", ud.getUsername());
-    model.addAttribute("saldo", cliente.getSaldo());
+        model.addAttribute("username", cliente.getEmail());
+        model.addAttribute("tipo", cliente.getTipo());
+        model.addAttribute("saldo", cliente.getSaldo());
         model.addAttribute("locacoes", locacaoRepository.findActiveWithObra(cliente, Locacao.Status.ATIVA));
         return "locacoes_minhas";
     }
@@ -130,7 +132,8 @@ public class LocacaoController {
     @GetMapping("/extrato")
     public String extrato(@AuthenticationPrincipal UserDetails ud, Model model){
         Usuario cliente = current(ud);
-        model.addAttribute("username", ud.getUsername());
+        model.addAttribute("username", cliente.getEmail());
+        model.addAttribute("tipo", cliente.getTipo());
         model.addAttribute("saldo", cliente.getSaldo());
         model.addAttribute("movs", movRepo.findExtrato(cliente));
         model.addAttribute("recargas", recargaRepo.findByUsuarioOrderByCriadaEmDesc(cliente));
@@ -143,7 +146,9 @@ public class LocacaoController {
         if(!UsuarioTipo.LOCADOR.equals(u.getTipo())) {
             return "403";
         }
-        model.addAttribute("username", ud.getUsername());
+        model.addAttribute("username", u.getEmail());
+        model.addAttribute("tipo", u.getTipo());
+        model.addAttribute("saldo", u.getSaldo());
         List<Locacao> locs = locacaoRepository.findHistoricoByLocador(u);
         model.addAttribute("locacoes", locs);
         return "locacoes_historico_locador";

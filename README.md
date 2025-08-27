@@ -128,3 +128,27 @@ recarga_saldo(id, usuario_id, valor, tipo)
 
 ---
 Documentação gerada conforme requisitos: explicação de arquitetura, regras no banco vs aplicação, setup e fluxos principais.
+
+
+## Mudanças de interface (27/08/2025)
+
+Organizei a interface para deixar as telas mais consistentes e centralizar onde novas obras são criadas.
+
+O que foi feito
+- Centralizei o cadastro de obras na tela de gerenciamento: `/catalogo/obras/gerenciar` (JSP: `WEB-INF/jsp/obras_gerenciar.jsp`). O formulário POST continua nessa rota.
+- Removi o botão e o modal duplicados do catálogo do locador (`/locador/catalogo` — `WEB-INF/jsp/catalogo_locador.jsp`) para evitar dois pontos de criação.
+- Padronizei as tabelas para usar o CSS global (`src/main/resources/static/css/style.css`): retirei estilos inline e simplifiquei a marcação das tabelas (thead/tbody) em várias JSPs.
+
+Principais arquivos alterados
+- `WEB-INF/jsp/obras_gerenciar.jsp`
+- `WEB-INF/jsp/catalogo_locador.jsp`
+- `WEB-INF/jsp/locacoes_historico_locador.jsp`
+- `WEB-INF/jsp/obras.jsp`
+- `WEB-INF/jsp/locacoes_disponiveis.jsp`
+- `WEB-INF/jsp/locacoes_minhas.jsp`
+- `WEB-INF/jsp/extrato.jsp`
+
+Impacto
+- Não mudei rotas de API — a alteração é de UX/markup: a tela de criação fica centralizada.
+- Para que o header mostre corretamente as opções por perfil, `ObraController.gerenciar(...)` agora envia `tipo`, `saldo` e `username` ao model.
+

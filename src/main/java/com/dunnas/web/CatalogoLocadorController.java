@@ -62,8 +62,10 @@ public class CatalogoLocadorController {
     @GetMapping
     public String listar(@AuthenticationPrincipal UserDetails user, Model model){
         Usuario locador = current(user);
-        model.addAttribute("username", user.getUsername());
-    List<CatalogoLocador> itens = catalogoLocadorRepository.findWithObraByLocador(locador);
+        model.addAttribute("username", locador.getEmail());
+        model.addAttribute("tipo", locador.getTipo());
+        model.addAttribute("saldo", locador.getSaldo());
+        List<CatalogoLocador> itens = catalogoLocadorRepository.findWithObraByLocador(locador);
         model.addAttribute("itens", itens);
         model.addAttribute("obras", obraRepository.findAll());
         model.addAttribute("form", new NovoCatalogoForm(null, 0));
@@ -76,17 +78,19 @@ public class CatalogoLocadorController {
                             BindingResult result,
                             Model model){
         Usuario locador = current(user);
+        model.addAttribute("username", locador.getEmail());
+        model.addAttribute("tipo", locador.getTipo());
+        model.addAttribute("saldo", locador.getSaldo());
         if(!UsuarioTipo.LOCADOR.equals(locador.getTipo())){
             result.reject("forbidden","Somente LOCADOR pode alterar catálogo");
         }
         Optional<Obra> obraOpt = form.getObraId() == null ? Optional.empty() : obraRepository.findById(form.getObraId());
-    if(form.getObraId() != null && !obraOpt.isPresent()){
+        if(form.getObraId() != null && !obraOpt.isPresent()){
             result.rejectValue("obraId","notfound","Obra inexistente");
         } else if(obraOpt.isPresent() && catalogoLocadorRepository.findByLocadorAndObra(locador, obraOpt.get()).isPresent()) {
             result.rejectValue("obraId","duplicate","Já cadastrada");
         }
         if(result.hasErrors()){
-            model.addAttribute("username", user.getUsername());
             model.addAttribute("itens", catalogoLocadorRepository.findWithObraByLocador(locador));
             model.addAttribute("obras", obraRepository.findAll());
             model.addAttribute("form", form);

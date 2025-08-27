@@ -7,15 +7,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.dunnas.domain.Usuario;
+import com.dunnas.repository.ObraRepository;
 import com.dunnas.repository.UsuarioRepository;
 
 @Controller
 public class HomeController {
 
     private final UsuarioRepository usuarioRepository;
+    private final ObraRepository obraRepository;
 
-    public HomeController(UsuarioRepository usuarioRepository){
+    public HomeController(UsuarioRepository usuarioRepository, ObraRepository obraRepository){
         this.usuarioRepository = usuarioRepository;
+        this.obraRepository = obraRepository;
     }
 
     @GetMapping("/login")
@@ -31,6 +34,8 @@ public class HomeController {
             model.addAttribute("tipo", u.getTipo());
             model.addAttribute("saldo", u.getSaldo());
         }
+        // Adiciona lista de obras para o catálogo na home
+        model.addAttribute("obras", obraRepository.findAll());
         return "home";
     }
 

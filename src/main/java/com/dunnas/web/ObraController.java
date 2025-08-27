@@ -78,6 +78,9 @@ public class ObraController {
         Usuario u = usuarioRepository.findByEmail(ud.getUsername()).orElse(null);
         boolean autorizado = false;
         if(u != null){
+            model.addAttribute("tipo", u.getTipo());
+            model.addAttribute("saldo", u.getSaldo());
+            model.addAttribute("username", u.getEmail());
             if(u.getTipo() == com.dunnas.domain.UsuarioTipo.LOCADOR){
                 autorizado = true;
             } else {
@@ -100,7 +103,6 @@ public class ObraController {
             return "403";
         }
         model.addAttribute("obra", o);
-        model.addAttribute("username", ud.getUsername());
         return "obra_privada";
     }
 
@@ -113,7 +115,14 @@ public class ObraController {
 
     @GetMapping("/catalogo/obras/gerenciar")
     public String gerenciar(@AuthenticationPrincipal UserDetails user, Model model) {
-        model.addAttribute("username", user.getUsername());
+        Usuario u = usuarioRepository.findByEmail(user.getUsername()).orElse(null);
+        if (u != null) {
+            model.addAttribute("tipo", u.getTipo());
+            model.addAttribute("saldo", u.getSaldo());
+            model.addAttribute("username", u.getEmail());
+        } else {
+            model.addAttribute("username", user.getUsername());
+        }
         model.addAttribute("obras", obraRepository.findAll());
         model.addAttribute("form", new NovaObraForm());
         return "obras_gerenciar";

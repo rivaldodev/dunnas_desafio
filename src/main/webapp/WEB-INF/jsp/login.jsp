@@ -23,14 +23,14 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         </c:if>
         <div>
-            <button type="submit">Entrar</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Entrar</button>
         </div>
         <c:if test="${param.error != null}">Credenciais inválidas</c:if>
         <c:if test="${param.logout != null}">Sessão encerrada</c:if>
     </form>
-    <div style="margin-top: 16px; text-align: center;">
-        <a href="<c:url value='/usuarios/cadastrar' />">Cadastre-se</a>
-    </div>
+        <div style="margin-top: 16px; text-align: center;">
+            <a href="<c:url value='/usuarios/cadastrar' />" class="btn btn-secondary" style="width:100%;text-align:center;">Cadastre-se</a>
+        </div>
 </div>
 </body>
 </html>

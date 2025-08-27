@@ -28,7 +28,7 @@ public class Locacao {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="locador_id", nullable=false)
     private Usuario locador;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="obra_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER) @JoinColumn(name="obra_id", nullable=false)
     private Obra obra;
 
     @Column(name="valor_total", nullable=false)

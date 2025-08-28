@@ -3,6 +3,10 @@ Sistema de Gerenciamento de Aluguel de Livros – Desafio Técnico
 
 ## Sumário
 - [Visão Geral](#visão-geral)
+# Sistema de Gerenciamento de Aluguel de Livros – Desafio Técnico
+
+## Sumário
+- [Visão Geral](#visão-geral)
 - [Stack](#stack)
 - [Setup Rápido](#setup-rápido)
 - [Credenciais Iniciais](#credenciais-iniciais)
@@ -58,7 +62,7 @@ Usuários seed criados nas migrações iniciais (ajuste conforme necessário):
 ## Distribuição da Lógica (Banco x Aplicação)
 Banco (PL/pgSQL / constraints / triggers):
 - Validação de 50% (sinal/restante) e criação automática das movimentações.
-- Débito automático do saldo ao inserir movimentação financeira (sinal/restante).
+- Débito automático do saldo ao inserir movimentacao_financeira (sinal/restante).
 - Crédito automático em recarga (after insert) e atualização de saldo.
 - Controle de estoque: decremento ao iniciar locação; restituição ao finalizar.
 - Garantia de consistência de status e flags sinal_pago / restante_pago.
@@ -73,10 +77,48 @@ Aplicação (Spring MVC / Controllers / Views):
 > Aproximadamente >50% da lógica crítica (financeiro, estoque, integridade das locações) está no banco.
 
 ## Migrações Flyway
-- V1..V5: Base, ajustes usuários/roles, esquema locação/catalogo, regras iniciais.
-- V6..V10: Automação pagamentos 50%, saldo, recarga, conversão enum->varchar, ajustes finalize.
-- V11: Campos de descrição pública e privada de obra.
-Reparo de checksum foi efetuado via flyway:repair quando houve ajuste em script aplicado (documentado no histórico de commits).
+
+Aqui está um resumo prático das migrações aplicadas ao banco. Use como referência rápida ao revisar a evolução do esquema e das regras de negócio.
+
+- V1 — Estrutura base
+  - Cria `role`, `usuario` e `usuario_role`, além do tipo `user_tipo` (enum). Contém seeds iniciais para desenvolvimento.
+
+- V2 — Ajustes de seeds e roles
+  - Atualiza contas seed e reassocia roles (limpeza/normalização de dados de desenvolvimento).
+
+- V3 — Entidades do domínio
+  - Cria `obra`, `catalogo_locador`, `locacao` e `movimentacao_financeira` (com enums iniciais para status/tipo) e índices úteis para consultas.
+
+- V4 — Regras e triggers primeiras
+  - Introduz funções e triggers para validar estoque, decrementar/recuperar estoque, validar/persistir movimentações e atualizar flags na locação.
+
+- V5 — Conversões e consistência
+  - Ajustes para compatibilidade com JPA: conversões controladas de tipos, recriação de triggers quando necessário, e seeds refinadas.
+
+- V6 — Automação de pagamentos (sinal)
+  - Gera automaticamente o pagamento de SINAL (50%) ao criar uma locação e aplica validações mais estritas para sinal/restante.
+
+- V7 — Saldo e débito automático
+  - Adiciona coluna `saldo` em `usuario`, credita saldos demo e move a lógica de débito para o banco (validação e atualização atômica do saldo).
+
+- V8 — Recargas (meios de pagamento)
+  - Cria `recarga_saldo` e uma trigger para creditar saldo após inserção; originalmente usa enum para tipos de recarga.
+
+- V9 — Ajuste de tipos de recarga
+  - Converte `recarga_saldo.tipo` de enum para `VARCHAR` e adiciona CHECK com valores permitidos (compatibilidade JPA).
+
+- V10 — Flexibiliza finalização
+  - Ajusta validações para permitir finalização quando o SINAL estiver pago; o RESTANTE passa a ser tratado automaticamente por triggers posteriores.
+
+- V11 — Campo de descrição pública/privada
+  - Adiciona `desc_publica` e `desc_privada` à tabela `obra`, separando visibilidade pública e conteúdo privado acessível durante locação ativa.
+
+- V12 — Normaliza `usuario.tipo`
+  - Converte `usuario.tipo` de enum para `VARCHAR(20)` e aplica `CHECK` (LOCADOR|CLIENTE), encerrando a migração dos enums para texto.
+
+Como executar / reparar
+- Executar migrações: `./mvnw -DskipTests flyway:migrate`
+- Se alterar um script já aplicado em desenvolvimento: `./mvnw -DskipTests flyway:repair`
 
 ## Campos Públicos vs Privados da Obra
 Migração V11 introduziu:

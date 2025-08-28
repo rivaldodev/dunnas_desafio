@@ -1,0 +1,83 @@
+---
+config:
+  layout: elk
+  theme: redux-dark-color
+  look: classic
+title: Diagrama relacional do banco de dados
+---
+erDiagram
+	direction LR
+	usuario {
+		BIGSERIAL id PK ""  
+		VARCHAR nome  "VARCHAR(120) NOT NULL"  
+		VARCHAR email  "VARCHAR(160) UNIQUE NOT NULL"  
+		VARCHAR senha  "VARCHAR(120) NOT NULL"  
+		VARCHAR tipo  "VARCHAR(20) LOCADOR ou CLIENTE"  
+		NUMERIC saldo  "NUMERIC(12,2) DEFAULT 0"  
+		TIMESTAMPTZ criado_em  "DEFAULT now()"  
+		BOOLEAN ativo  "DEFAULT TRUE"  
+	}
+	role {
+		BIGSERIAL id PK ""  
+		VARCHAR nome  "VARCHAR(40) UNIQUE NOT NULL"  
+	}
+	usuario_role {
+		BIGINT usuario_id FK "REFERENCES usuario(id) ON DELETE CASCADE"  
+		BIGINT role_id FK "REFERENCES role(id) ON DELETE CASCADE"  
+	}
+	obra {
+		BIGSERIAL id PK ""  
+		VARCHAR isbn  "VARCHAR(20) UNIQUE NOT NULL"  
+		VARCHAR titulo  "VARCHAR(200) NOT NULL"  
+		VARCHAR autor  "VARCHAR(160)"  
+		NUMERIC preco  "NUMERIC(12,2) CHECK > 0"  
+		VARCHAR desc_publica  "VARCHAR(500)"  
+		VARCHAR desc_privada  "VARCHAR(2000)"  
+		BOOLEAN publico  "DEFAULT TRUE"  
+		TIMESTAMPTZ criado_em  "DEFAULT now()"  
+	}
+	catalogo_locador {
+		BIGSERIAL id PK ""  
+		BIGINT locador_id FK "REFERENCES usuario(id) ON DELETE CASCADE"  
+		BIGINT obra_id FK "REFERENCES obra(id) ON DELETE CASCADE"  
+		INTEGER estoque  "CHECK >= 0"  
+		TIMESTAMPTZ criado_em  "DEFAULT now()"  
+	}
+	locacao {
+		BIGSERIAL id PK ""  
+		BIGINT cliente_id FK "REFERENCES usuario(id)"  
+		BIGINT locador_id FK "REFERENCES usuario(id)"  
+		BIGINT obra_id FK "REFERENCES obra(id)"  
+		NUMERIC valor_total  "NUMERIC(12,2) CHECK > 0"  
+		BOOLEAN sinal_pago  "DEFAULT FALSE"  
+		BOOLEAN restante_pago  "DEFAULT FALSE"  
+		VARCHAR status  "VARCHAR(15) DEFAULT 'ATIVA' (ATIVA|FINALIZADA)"  
+		TIMESTAMPTZ iniciada_em  "DEFAULT now()"  
+		TIMESTAMPTZ devolvida_em  ""  
+	}
+	movimentacao_financeira {
+		BIGSERIAL id PK ""  
+		BIGINT usuario_id FK "REFERENCES usuario(id)"  
+		BIGINT locacao_id FK "REFERENCES locacao(id) ON DELETE CASCADE"  
+		VARCHAR tipo  "SINAL ou RESTANTE"  
+		NUMERIC valor  "NUMERIC(12,2) CHECK > 0"  
+		TIMESTAMPTZ criada_em  "DEFAULT now()"  
+	}
+	recarga_saldo {
+		BIGSERIAL id PK ""  
+		BIGINT usuario_id FK "REFERENCES usuario(id) ON DELETE CASCADE"  
+		VARCHAR tipo  "PIX, CARTAO_CREDITO, CARTAO_DEBITO, TRANSFERENCIA"  
+		NUMERIC valor  "NUMERIC(12,2) CHECK > 0"  
+		TIMESTAMPTZ criada_em  "DEFAULT now()"  
+	}
+
+	usuario||--|{usuario_role:"possui"
+	role||--|{usuario_role:"é atribuído a"
+	usuario||--o{catalogo_locador:"é locador de"
+	obra||--o{catalogo_locador:"está em"
+	usuario||--o{locacao:"é cliente de"
+	usuario||--o{locacao:"é locador de"
+	obra||--o{locacao:"é alugada em"
+	locacao||--|{movimentacao_financeira:"gera"
+	usuario||--o{movimentacao_financeira:"realiza"
+	usuario||--o{recarga_saldo:"faz recarga"

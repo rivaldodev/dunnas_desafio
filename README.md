@@ -1,8 +1,4 @@
-# dunnas_desafio
-Sistema de Gerenciamento de Aluguel de Livros – Desafio Técnico
 
-## Sumário
-- [Visão Geral](#visão-geral)
 # Sistema de Gerenciamento de Aluguel de Livros – Desafio Técnico
 
 ## Sumário
